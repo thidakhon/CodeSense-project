@@ -35,3 +35,16 @@ services:
         value: 3
       - key: OPENAI_RETRY_BASE_MS
         value: 3000
+
+  # Frontend Static Site
+  - type: static
+    name: codesense-frontend
+    buildCommand: cd frontend && npm install && npm run build
+    staticPublishPath: frontend/dist
+    envVars:
+      - key: VITE_API_BASE
+        value: https://codesense-backend-pt79.onrender.com
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
