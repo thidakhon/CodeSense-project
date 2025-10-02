@@ -37,14 +37,10 @@ services:
         value: 3000
 
   # Frontend Static Site
-  - type: web
+  - type: static
     name: codesense-frontend
-    runtime: node
-    region: oregon
-    plan: free
-    rootDir: frontend
-    buildCommand: npm install && npm run build
-    staticPublishPath: ./dist
+    buildCommand: cd frontend && npm install && npm run build
+    staticPublishPath: frontend/dist
     envVars:
       - key: NODE_VERSION
         value: 18.0.0
