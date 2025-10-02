@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Debug Tool</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test { margin: 10px 0; padding: 10px; border: 1px solid #ccc; }
+        .success { background: #d4edda; }
+        .error { background: #f8d7da; }
+        pre { background: #f8f9fa; padding: 10px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>API Debug Tool</h1>
+    
+    <div class="test">
+        <h3>1. Environment Variables</h3>
+        <div id="env-vars"></div>
+    </div>
+    
+    <div class="test">
+        <h3>2. Backend Health Check</h3>
+        <button onclick="testHealth()">Test Backend Health</button>
+        <div id="health-result"></div>
+    </div>
+    
+    <div class="test">
+        <h3>3. Auth Endpoint Test</h3>
+        <button onclick="testAuth()">Test Auth Endpoint</button>
+        <div id="auth-result"></div>
+    </div>
+
+    <script>
+        // Show environment variables
+        function showEnvVars() {
+            const envDiv = document.getElementById('env-vars');
+            const baseURL = window.location.hostname === 'localhost' ? 
+                'http://localhost:3002' : 
+                'https://your-backend-url.onrender.com'; // This should be replaced with your actual backend URL
+            
+            envDiv.innerHTML = `
+                <p><strong>Current Base URL:</strong> ${baseURL}</p>
+                <p><strong>VITE_API_BASE:</strong> ${import.meta.env.VITE_API_BASE || 'Not set'}</p>
+                <p><strong>VITE_API_URL:</strong> ${import.meta.env.VITE_API_URL || 'Not set'}</p>
+                <p><strong>Current Hostname:</strong> ${window.location.hostname}</p>
+            `;
+        }
+        
+        // Test backend health
+        async function testHealth() {
+            const resultDiv = document.getElementById('health-result');
+            resultDiv.innerHTML = 'Testing...';
+            
+            try {
+                // Try to get the base URL from environment or use default
+                const baseURL = import.meta.env.VITE_API_BASE || 
+                              import.meta.env.VITE_API_URL || 
+                              'https://your-backend-url.onrender.com'; // Replace with your actual backend URL
+                
+                const response = await fetch(`${baseURL}/api/health`);
+                const data = await response.json();
+                
+                resultDiv.innerHTML = `
+                    <div class="success">
+                        <strong>✅ Backend is running!</strong>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    </div>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <strong>❌ Backend connection failed</strong>
+                        <p>Error: ${error.message}</p>
+                        <p>Make sure your backend URL is correct and the backend is running.</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // Test auth endpoint
+        async function testAuth() {
+            const resultDiv = document.getElementById('auth-result');
+            resultDiv.innerHTML = 'Testing...';
+            
+            try {
+                const baseURL = import.meta.env.VITE_API_BASE || 
+                              import.meta.env.VITE_API_URL || 
+                              'https://your-backend-url.onrender.com'; // Replace with your actual backend URL
+                
+                const response = await fetch(`${baseURL}/api/auth/auto`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                resultDiv.innerHTML = `
+                    <div class="success">
+                        <strong>✅ Auth endpoint works!</strong>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    </div>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <strong>❌ Auth endpoint failed</strong>
+                        <p>Error: ${error.message}</p>
+                        <p>This might be a CORS issue or the backend isn't running.</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // Initialize
+        showEnvVars();
+    </script>
+</body>
+</html>
