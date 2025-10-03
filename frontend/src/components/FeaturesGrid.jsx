@@ -112,11 +112,11 @@ export default function FeaturesGrid() {
           <IconWrap aria-hidden>
             <span aria-hidden role="img">⚡</span>
           </IconWrap>
-          <CardTitle>Code Input & Upload</CardTitle>
-          <CardText>The platform will allow users to paste or upload code directly into the system. This provides the foundation for generating explanations and insights.</CardText>
+          <CardTitle>Code Input</CardTitle>
+          <CardText>The platform will allow users to paste code directly into the system. This provides the foundation for generating explanations and insights.</CardText>
           <Visual aria-hidden>
             <div className="bigNum">01</div>
-            <div className="snippet">// Paste code or upload a file\nfunction example() { /* ... */ }</div>
+            <div className="snippet">// Paste code\nfunction example() { /* ... */ }</div>
           </Visual>
         </Card>
 
