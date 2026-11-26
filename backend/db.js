@@ -69,3 +69,11 @@ export function getConversationMessages(conversationId, limit = 200) {
   const rows = db.prepare('SELECT role, content, created_at FROM messages WHERE conversation_id = ? ORDER BY id ASC LIMIT ?').all(conversationId, limit)
   return rows
 }
+
+export function deleteConversation(conversationId, userId) {
+  const db = getDb()
+  const owned = db.prepare('SELECT id FROM conversations WHERE id = ? AND user_id = ?').get(conversationId, userId)
+  if (!owned) return 0
+  db.prepare('DELETE FROM messages WHERE conversation_id = ?').run(conversationId)
+  return db.prepare('DELETE FROM conversations WHERE id = ? AND user_id = ?').run(conversationId, userId).changes
+}

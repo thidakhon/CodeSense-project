@@ -41,14 +41,34 @@ Frontend runs on: http://localhost:5173
 - **Backend Port**: 3002
 - **Frontend Port**: 5173
 - **Database**: SQLite (local file)
-- **AI Provider**: OpenAI (set OPENAI_API_KEY in backend/.env)
+- **AI Provider**: OpenRouter free model by default (set `OPENROUTER_API_KEY` in `backend/.env`)
+- **Access**: sign in, register, or use "Try live demo" to enter the workspace
 
 ## 📝 Environment Variables
 
-Create `backend/.env`:
+Copy the examples and fill in your keys:
+
+```bash
+cp backend/.env.example backend/.env
+cp frontend/.env.example frontend/.env
 ```
-OPENAI_API_KEY=your_openai_api_key_here
+
+Backend (minimum for real AI responses):
+
 ```
+AI_PROVIDER=openrouter
+OPENROUTER_API_KEY=your_openrouter_key_here
+OPENROUTER_MODEL=nvidia/nemotron-3.5-lightning:free
+JWT_SECRET=replace-with-a-random-string
+```
+
+Frontend:
+
+```
+VITE_API_URL=http://localhost:3002
+```
+
+See [RENDER_DEPLOYMENT.md](./RENDER_DEPLOYMENT.md) for hosted settings.
 
 ## 🎯 Features
 

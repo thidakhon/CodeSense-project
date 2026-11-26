@@ -1,11 +1,14 @@
 import axios from 'axios'
 
-// Use environment variable for API URL
-// Development: http://localhost:3002
-// Production: https://codesense-backend-4fbk.onrender.com
-const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:3002'
+// Local development defaults to the backend running on port 3002.
+// On Render, VITE_API_URL is injected from the backend service URL.
+// An intentionally empty value means "same origin" (for single-service hosting).
+const configuredApiUrl = import.meta.env.VITE_API_URL
+const baseURL = configuredApiUrl === undefined
+  ? 'http://localhost:3002'
+  : String(configuredApiUrl).replace(/\/$/, '')
 
-console.log('[api] Using backend:', baseURL)
+console.log('[api] Using backend:', baseURL || 'same origin')
 
 // Simple token helpers
 const TOKEN_KEY = 'cw_token'
@@ -150,5 +153,9 @@ export const api = {
   async historyGet(id) {
     const { data } = await axios.get(`${baseURL}/api/history/${id}`, { headers: authHeaders() })
     return data.messages || []
+  },
+  async historyDelete(id) {
+    const { data } = await axios.delete(`${baseURL}/api/history/${id}`, { headers: authHeaders() })
+    return data
   },
 }

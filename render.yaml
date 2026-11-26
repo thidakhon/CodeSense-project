@@ -1,5 +1,5 @@
 services:
-  # Backend API Service
+  # Backend API (Express + SQLite, Node 22 for better-sqlite3)
   - type: web
     name: codesense-backend
     runtime: node
@@ -10,41 +10,55 @@ services:
     startCommand: npm start
     envVars:
       - key: NODE_VERSION
-        value: 18.0.0
-      - key: OPENAI_API_KEY
-        sync: false
-      - key: JWT_SECRET
-        generateValue: true
+        value: 22.13.1
       - key: PORT
         value: 10000
+      - key: JWT_SECRET
+        generateValue: true
+      # OpenRouter free tier — paste your key when applying the blueprint.
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: AI_PROVIDER
+        value: openrouter
+      - key: OPENROUTER_MODEL
+        value: nvidia/nemotron-3.5-lightning:free
       - key: CLIENT_ORIGIN
         value: "*"
-      - key: OPENAI_MODEL
-        value: gpt-4o-mini
-      - key: AI_PROVIDER
-        value: openai
       - key: USE_MOCK
         value: false
       - key: USE_FALLBACK_ON_ERROR
         value: true
-      - key: RATE_LIMIT_WINDOW_MS
-        value: 60000
-      - key: RATE_LIMIT_MAX_REQUESTS
-        value: 10
       - key: OPENAI_MAX_RETRIES
         value: 3
       - key: OPENAI_RETRY_BASE_MS
         value: 3000
+      - key: RATE_LIMIT_WINDOW_MS
+        value: 60000
+      - key: RATE_LIMIT_MAX_REQUESTS
+        value: 10
+      # Optional: fill in to enable "Continue with Google".
+      - key: GOOGLE_CLIENT_ID
+        sync: false
 
-  # Frontend Static Site
+  # Frontend SPA (Vite)
   - type: static
     name: codesense-frontend
+    region: oregon
+    plan: free
+    rootDir: frontend
     buildCommand: npm install && npm run build
     staticPublishPath: dist
-    rootDir: frontend
     envVars:
+      - key: NODE_VERSION
+        value: 22.13.1
+      # Automatically points at the deployed backend service.
       - key: VITE_API_URL
-        value: https://codesense-backend-pt79.onrender.com
+        fromService:
+          type: web
+          name: codesense-backend
+          property: url
+      - key: VITE_GOOGLE_CLIENT_ID
+        sync: false
     routes:
       - type: rewrite
         source: /*

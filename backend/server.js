@@ -4,7 +4,7 @@ import cors from 'cors';
 import OpenAI from 'openai';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { getDb, createConversationIfNeeded, addMessage, listConversations, getConversationMessages } from './db.js';
+import { getDb, createConversationIfNeeded, addMessage, listConversations, getConversationMessages, deleteConversation } from './db.js';
 import { OAuth2Client } from 'google-auth-library';
 
 const app = express();
@@ -479,6 +479,14 @@ app.post('/api/history/start', authRequired, (req, res) => {
   const t = String(title || 'New chat').slice(0, 60);
   const id = createConversationIfNeeded(req.userId, t);
   res.json({ conversationId: id });
+});
+
+app.delete('/api/history/:id', authRequired, (req, res) => {
+  const convId = Number(req.params.id);
+  if (!Number.isFinite(convId)) return res.status(400).json({ error: 'Invalid conversation id' });
+  const changes = deleteConversation(convId, req.userId);
+  if (!changes) return res.status(404).json({ error: 'Conversation not found' });
+  res.json({ ok: true, id: convId });
 });
 
 app.post('/api/chat', authOptional, rateLimit, async (req, res) => {
