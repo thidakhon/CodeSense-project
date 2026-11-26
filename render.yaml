@@ -53,12 +53,9 @@ services:
     envVars:
       - key: NODE_VERSION
         value: 22.13.1
-      # Automatically points at the deployed backend service.
+      # Paste the deployed backend URL when applying the Blueprint.
       - key: VITE_API_URL
-        fromService:
-          type: web
-          name: codesense-backend
-          property: url
+        sync: false
       - key: VITE_GOOGLE_CLIENT_ID
         sync: false
     routes:
