@@ -61,3 +61,7 @@ render.yaml.local
 backend/*.db
 backend/*.sqlite
 backend/*.sqlite3
+
+backend/*.sqlite*
+*.sqlite-shm
+*.sqlite-wal
