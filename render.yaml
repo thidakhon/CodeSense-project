@@ -42,9 +42,8 @@ services:
         sync: false
 
   # Frontend SPA (Vite)
-  - type: web
+  - type: static
     name: codesense-frontend
-    runtime: static
     region: oregon
     plan: free
     rootDir: frontend
