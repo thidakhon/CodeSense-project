@@ -41,11 +41,12 @@ services:
       - key: GOOGLE_CLIENT_ID
         sync: false
 
-  # Frontend SPA (Vite)
-  - type: static
+  # Frontend static site (Vite).
+  # Render's current Blueprint schema uses type: web + runtime: static.
+  # Static sites do not accept region or plan (additionalProperties: false).
+  - type: web
     name: codesense-frontend
-    region: oregon
-    plan: free
+    runtime: static
     rootDir: frontend
     buildCommand: npm install && npm run build
     staticPublishPath: dist
